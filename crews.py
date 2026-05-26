@@ -1,15 +1,20 @@
-from crewai import Crew
-from crewai import Agent, Task, Crew
-from tasks import generate_prompt_task
+import os
+import google.generativeai as genai
+
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))  # type: ignore
+
+model = genai.GenerativeModel("gemini-2.5-flash")  # type: ignore
 
 
 def run_prompt_generator(description, style):
-    task = generate_prompt_task(description, style)
+    prompt = f"""
+    Generate a detailed AI prompt for:
 
-    crew = Crew(
-        agents=[agent for agent in [task.agent] if agent is not None],
-        tasks=[task]
-    )
+    Description: {description}
+    Style: {style}
 
-    result = crew.kickoff()
-    return result
+    Return only the final prompt.
+    """
+
+    response = model.generate_content(prompt)
+    return response.text
