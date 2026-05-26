@@ -1,4 +1,5 @@
 from crewai import Crew
+from crewai import Agent, Task, Crew
 from tasks import generate_prompt_task
 
 
